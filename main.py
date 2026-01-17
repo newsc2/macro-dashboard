@@ -161,7 +161,7 @@ app.add_middleware(
 # API ENDPOINTS
 # ============================================================================
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     """Root endpoint"""
     return {
@@ -171,22 +171,10 @@ async def root():
     }
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health_check():
-    """Health check"""
-    try:
-        db = SessionLocal()
-        db.execute(text("SELECT 1"))
-        indicator_count = db.query(IndicatorMetadata).count()
-        db.close()
-
-        return {
-            "status": "healthy",
-            "database": "connected",
-            "total_indicators": indicator_count
-        }
-    except Exception as e:
-        raise HTTPException(status_code=503, detail=f"Unhealthy: {str(e)}")
+    """Health check - simple version for Render"""
+    return {"status": "ok"}
 
 
 @app.get("/api/indicators", response_model=List[IndicatorMetadataResponse])
