@@ -1,0 +1,40 @@
+databases:
+  - name: macro-dashboard-db
+    plan: free
+    databaseName: macro_dashboard
+    user: macro_user
+
+services:
+  # FastAPI Backend
+  - type: web
+    name: macro-dashboard-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: macro-dashboard-db
+          property: connectionString
+      - key: FRED_API_KEY
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /health
+
+  # Streamlit Frontend
+  - type: web
+    name: macro-dashboard-ui
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard_ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    envVars:
+      - key: API_BASE
+        fromService:
+          name: macro-dashboard-api
+          type: web
+          property: host
+      - key: PYTHON_VERSION
+        value: 3.11.0
