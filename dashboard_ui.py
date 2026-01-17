@@ -645,27 +645,36 @@ def check_recession_signals():
     """Check for key recession warning signals (uses silent mode to avoid error spam)"""
     warnings = []
 
+    # Helper to safely get numeric value
+    def safe_value(data, default=0):
+        if data and data.get('latest_value') is not None:
+            return data['latest_value']
+        return default
+
     # Check yield curve
     yield_data = fetch_api("/api/indicators/T10Y2Y/latest", silent=True)
-    if yield_data and yield_data.get('latest_value', 0) < 0:
+    if safe_value(yield_data) < 0:
         warnings.append(("Yield Curve Inverted", "The 10Y-2Y spread is negative - historically precedes recessions by 6-18 months"))
 
     # Check VIX (try FRED version first, then Yahoo)
     vix_data = fetch_api("/api/indicators/VIXCLS/latest", silent=True)
     if not vix_data:
         vix_data = fetch_api("/api/indicators/^VIX/latest", silent=True)
-    if vix_data and vix_data.get('latest_value', 0) > 30:
-        warnings.append(("High Volatility", f"VIX is {vix_data['latest_value']:.1f} - elevated market fear"))
+    vix_val = safe_value(vix_data)
+    if vix_val > 30:
+        warnings.append(("High Volatility", f"VIX is {vix_val:.1f} - elevated market fear"))
 
     # Check unemployment trend
     unemp_data = fetch_api("/api/indicators/UNRATE/latest", silent=True)
-    if unemp_data and unemp_data.get('latest_value', 0) > 5:
-        warnings.append(("Elevated Unemployment", f"Unemployment at {unemp_data['latest_value']:.1f}% - above historical average"))
+    unemp_val = safe_value(unemp_data)
+    if unemp_val > 5:
+        warnings.append(("Elevated Unemployment", f"Unemployment at {unemp_val:.1f}% - above historical average"))
 
     # Check high yield spread (credit stress)
     hy_data = fetch_api("/api/indicators/BAMLH0A0HYM2/latest", silent=True)
-    if hy_data and hy_data.get('latest_value', 0) > 5:
-        warnings.append(("Credit Stress", f"High yield spread at {hy_data['latest_value']:.2f}% - elevated credit risk"))
+    hy_val = safe_value(hy_data)
+    if hy_val > 5:
+        warnings.append(("Credit Stress", f"High yield spread at {hy_val:.2f}% - elevated credit risk"))
 
     return warnings
 
