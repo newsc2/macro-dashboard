@@ -102,7 +102,7 @@ class IndicatorMetadata(Base):
 class RefreshLog(Base):
     """Data refresh log"""
     __tablename__ = 'refresh_log'
-    
+
     refresh_id = Column(Integer, primary_key=True, autoincrement=True)
     source = Column(String(50), nullable=False)
     indicator_id = Column(String(100))
@@ -110,6 +110,9 @@ class RefreshLog(Base):
     records_added = Column(Integer)
     status = Column(String(20), nullable=False)
     error_message = Column(Text)
+
+# Create all tables on startup
+Base.metadata.create_all(bind=engine)
 
 # ============================================================================
 # PYDANTIC MODELS (API)
