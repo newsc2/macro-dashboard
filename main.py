@@ -22,16 +22,20 @@ import os
 class Settings(BaseSettings):
     """Application settings from environment"""
     database_url: str = "postgresql://postgres:postgres@postgres:5432/macro_dashboard"
-    fred_api_key: str
+    fred_api_key: str = ""  # Optional - only needed for FRED data refresh
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     debug: bool = True
-    
+
     class Config:
         env_file = ".env"
         case_sensitive = False
 
 settings = Settings()
+
+# Fix Render's postgres:// URL format (SQLAlchemy needs postgresql://)
+if settings.database_url.startswith("postgres://"):
+    settings.database_url = settings.database_url.replace("postgres://", "postgresql://", 1)
 
 # ============================================================================
 # DATABASE SETUP
