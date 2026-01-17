@@ -31,9 +31,6 @@ services:
     startCommand: streamlit run dashboard_ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
     envVars:
       - key: API_BASE
-        fromService:
-          name: macro-dashboard-api
-          type: web
-          property: host
+        value: https://macro-dashboard-api.onrender.com
       - key: PYTHON_VERSION
         value: 3.11.0
