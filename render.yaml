@@ -1,36 +1,54 @@
+# render.yaml
+# This file configures the multi-service deployment on Render.
+# It defines a PostgreSQL database, a FastAPI backend service,
+# and a Streamlit frontend service.
+
 databases:
   - name: macro-dashboard-db
-    plan: free
     databaseName: macro_dashboard
-    user: macro_user
+    user: db_user
+    plan: free # Use Render's free tier for the database
 
 services:
-  # FastAPI Backend
+  # ------------------
+  # FastAPI Backend Service
+  # ------------------
   - type: web
     name: macro-dashboard-api
-    runtime: python
-    plan: free
-    buildCommand: pip install -r requirements-api.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    env: python
+    plan: free # Use Render's free tier for the web service
+    # The API service needs fewer dependencies
+    buildCommand: "pip install -r requirements-api.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
     envVars:
+      # The DATABASE_URL is automatically injected by Render because the 'name'
+      # of the database service ('macro-dashboard-db') is linked below.
       - key: DATABASE_URL
         fromDatabase:
           name: macro-dashboard-db
           property: connectionString
+      # IMPORTANT: You must create this environment variable in your Render account.
+      # Go to your Render dashboard, create an "Environment Group" named "secrets",
+      # and add a variable named FRED_API_KEY with your key.
       - key: FRED_API_KEY
-        sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.0
+        fromGroup: secrets
 
-  # Streamlit Frontend
+  # ------------------
+  # Streamlit Frontend Service
+  # ------------------
   - type: web
     name: macro-dashboard-ui
-    runtime: python
+    env: python
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run dashboard_ui.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
+    # The UI service needs all the visualization libraries
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "streamlit run dashboard_ui.py --server.port $PORT --server.address 0.0.0.0"
     envVars:
+      # This is the crucial fix:
+      # We point the frontend to the backend's public URL.
+      # Render automatically creates this URL from the 'name' of the API service.
       - key: API_BASE
         value: https://macro-dashboard-api.onrender.com
-      - key: PYTHON_VERSION
-        value: 3.11.0
+      # Common setting for Streamlit apps on services like Render
+      - key: STREAMLIT_SERVER_ENABLE_XSRF_PROTECTION
+        value: "false"
