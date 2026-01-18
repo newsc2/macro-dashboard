@@ -27,10 +27,7 @@ services:
         fromDatabase:
           name: macro-dashboard-db
           property: connectionString
-      # The 'secrets' environment group will be synced to this service.
-      # IMPORTANT: You must create this environment group in your Render account
-      # and add a secret variable named FRED_API_KEY with your key.
-      - fromGroup: secrets
+
 
   # ------------------
   # Streamlit Frontend Service
