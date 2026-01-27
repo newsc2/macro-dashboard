@@ -22,35 +22,145 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS for dark fintech styling - Enhanced UX
+# Design System CSS - Based on DESIGN_SYSTEM.md v2.0
+# Load fonts via <link> tags (more reliable than @import in inline styles)
+st.markdown("""
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
     /* ============================================
+       DESIGN SYSTEM v2.0 - CSS CUSTOM PROPERTIES
+       Philosophy: Clean, data-first, professional
+       ============================================ */
+    :root {
+        /* === TYPOGRAPHY === */
+        --font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+        /* Type Scale */
+        --text-display: 32px;
+        --text-h1: 24px;
+        --text-h2: 20px;
+        --text-h3: 16px;
+        --text-body: 14px;
+        --text-caption: 12px;
+        --text-metric-lg: 36px;
+        --text-metric-sm: 24px;
+
+        /* === COLORS - BACKGROUNDS === */
+        --color-bg-primary: #0a0a0a;
+        --color-bg-secondary: #141414;
+        --color-bg-tertiary: #1e1e1e;
+        --color-bg-overlay: rgba(0, 0, 0, 0.8);
+
+        /* === COLORS - TEXT === */
+        --color-text-primary: #ffffff;
+        --color-text-secondary: #a3a3a3;
+        --color-text-tertiary: #737373;
+        --color-text-disabled: #525252;
+
+        /* === COLORS - BORDERS === */
+        --color-border-subtle: #262626;
+        --color-border-default: #404040;
+        --color-border-strong: #525252;
+
+        /* === COLORS - ACCENT (Teal) === */
+        --color-accent-primary: #14b8a6;
+        --color-accent-hover: #0d9488;
+        --color-accent-active: #0f766e;
+        --color-accent-subtle: rgba(20, 184, 166, 0.1);
+        --color-accent-border: rgba(20, 184, 166, 0.3);
+
+        /* === COLORS - STATUS === */
+        --color-success: #10b981;
+        --color-success-bg: rgba(16, 185, 129, 0.1);
+        --color-warning: #f59e0b;
+        --color-warning-bg: rgba(245, 158, 11, 0.1);
+        --color-danger: #ef4444;
+        --color-danger-bg: rgba(239, 68, 68, 0.1);
+        --color-info: #3b82f6;
+        --color-info-bg: rgba(59, 130, 246, 0.1);
+
+        /* === COLORS - CHARTS === */
+        --color-chart-1: #14b8a6;
+        --color-chart-2: #8b5cf6;
+        --color-chart-3: #f59e0b;
+        --color-chart-4: #ec4899;
+        --color-chart-5: #06b6d4;
+        --color-chart-grid: rgba(255, 255, 255, 0.05);
+        --color-chart-axis: #737373;
+
+        /* === SPACING === */
+        --space-xs: 4px;
+        --space-sm: 8px;
+        --space-md: 16px;
+        --space-lg: 24px;
+        --space-xl: 32px;
+        --space-2xl: 48px;
+
+        /* === BORDER RADIUS === */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-full: 9999px;
+
+        /* === SHADOWS === */
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5);
+        --shadow-accent: 0 0 16px rgba(20, 184, 166, 0.3);
+
+        /* === TRANSITIONS === */
+        --transition-fast: 100ms ease-out;
+        --transition-base: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        --transition-slow: 250ms ease-in-out;
+    }
+
+    /* ============================================
        FONTS & BASE
        ============================================ */
-    @import url('https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap');
-
     html, body, [class*="st-"], .stMarkdown, .stText {
-        font-family: 'Urbanist', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-family: var(--font-family) !important;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Material Icons - CRITICAL: Ensure icon font renders correctly */
+    [data-testid="stIconMaterial"],
+    .material-symbols-rounded,
+    span[translate="no"] {
+        font-family: 'Material Symbols Rounded' !important;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 20px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        font-feature-settings: 'liga';
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
 
     /* ============================================
        ANIMATIONS & KEYFRAMES
        ============================================ */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
     @keyframes fadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes pulse {
@@ -64,388 +174,507 @@ st.markdown("""
     }
 
     /* ============================================
-       LAYERED BACKGROUND DEPTH
+       MAIN LAYOUT & BACKGROUND
        ============================================ */
     .main {
-        background: linear-gradient(180deg, #0a0d14 0%, #0E1117 50%, #131820 100%) !important;
+        background: var(--color-bg-primary) !important;
     }
 
     .main .block-container {
-        padding: 1rem 2rem 2rem 2rem;
-        animation: fadeIn 0.6s ease-out;
+        padding: var(--space-lg) var(--space-xl) var(--space-2xl) var(--space-xl);
+        max-width: 1400px;
+        animation: fadeIn 200ms ease-out;
     }
 
     /* ============================================
-       GLASSMORPHISM CARDS
-       ============================================ */
-    [data-testid="stMetric"] {
-        background: rgba(26, 31, 46, 0.6) !important;
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 16px;
-        padding: 1rem;
-        box-shadow:
-            0 4px 24px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        animation: fadeInUp 0.5s ease-out backwards;
-    }
-
-    [data-testid="stMetric"]:hover {
-        transform: translateY(-4px);
-        box-shadow:
-            0 12px 40px rgba(0, 0, 0, 0.5),
-            0 0 0 1px rgba(0, 212, 170, 0.2),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        border-color: rgba(0, 212, 170, 0.3);
-    }
-
-    /* Stagger animation for metrics */
-    [data-testid="column"]:nth-child(1) [data-testid="stMetric"] { animation-delay: 0.1s; }
-    [data-testid="column"]:nth-child(2) [data-testid="stMetric"] { animation-delay: 0.2s; }
-    [data-testid="column"]:nth-child(3) [data-testid="stMetric"] { animation-delay: 0.3s; }
-    [data-testid="column"]:nth-child(4) [data-testid="stMetric"] { animation-delay: 0.4s; }
-
-    [data-testid="stMetricValue"] {
-        font-family: 'Urbanist', sans-serif !important;
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: #00D4AA;
-        letter-spacing: -0.02em;
-    }
-
-    [data-testid="stMetricLabel"] {
-        font-family: 'Urbanist', sans-serif !important;
-        font-size: 0.75rem;
-        color: #8896AB;
-        font-weight: 600;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-    }
-
-    [data-testid="stMetricDelta"] > div {
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-
-    [data-testid="stMetricDelta"] svg[data-testid="stMetricDeltaIcon-Up"] { color: #48BB78; }
-    [data-testid="stMetricDelta"] svg[data-testid="stMetricDeltaIcon-Down"] { color: #FC8181; }
-
-    /* ============================================
-       HEADERS WITH FADE-IN
+       TYPOGRAPHY
        ============================================ */
     h1 {
-        font-family: 'Urbanist', sans-serif !important;
-        background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 50%, #667EEA 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        animation: fadeInUp 0.6s ease-out;
+        font-family: var(--font-family) !important;
+        font-size: var(--text-display);
+        font-weight: 700;
+        color: var(--color-accent-primary);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+        margin-bottom: var(--space-sm);
     }
 
     h2 {
-        font-family: 'Urbanist', sans-serif !important;
-        color: #E2E8F0;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        margin-top: 1.5rem;
-        animation: fadeIn 0.5s ease-out;
+        font-family: var(--font-family) !important;
+        font-size: var(--text-h1);
+        font-weight: 600;
+        color: var(--color-accent-primary);
+        letter-spacing: 0;
+        line-height: 1.3;
+        margin-top: var(--space-2xl);
+        margin-bottom: var(--space-lg);
+        padding-bottom: var(--space-sm);
+        border-bottom: 2px solid var(--color-accent-primary);
     }
 
     h3 {
-        font-family: 'Urbanist', sans-serif !important;
-        color: #CBD5E0;
+        font-family: var(--font-family) !important;
+        font-size: var(--text-h2);
         font-weight: 600;
-        letter-spacing: -0.01em;
+        color: var(--color-accent-primary);
+        letter-spacing: 0;
+        line-height: 1.4;
     }
 
-    p, li, span {
-        font-family: 'Urbanist', sans-serif !important;
-        letter-spacing: -0.01em;
-        line-height: 1.65;
-        color: #A0AEC0;
+    h4, h5, h6 {
+        font-family: var(--font-family) !important;
+        font-size: var(--text-h3);
+        font-weight: 500;
+        color: var(--color-text-primary);
+    }
+
+    p, li {
+        font-family: var(--font-family) !important;
+        font-size: var(--text-body);
+        font-weight: 400;
+        color: var(--color-text-secondary);
+        line-height: 1.6;
+    }
+
+    /* Markdown text in containers */
+    [data-testid="stMarkdownContainer"] p,
+    [data-testid="stMarkdownContainer"] li {
+        color: var(--color-text-secondary);
+    }
+
+    [data-testid="stMarkdownContainer"] strong {
+        color: var(--color-text-primary);
+        font-weight: 600;
     }
 
     /* ============================================
-       SIDEBAR - LAYERED DEPTH
+       SIDEBAR - Linear-inspired
        ============================================ */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #080a0f 0%, #0E1117 50%, #151a24 100%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--color-bg-secondary) !important;
+        border-right: 1px solid var(--color-border-subtle);
     }
 
     [data-testid="stSidebar"] > div:first-child {
-        padding-top: 2rem;
+        padding: var(--space-lg);
     }
 
-    [data-testid="stSidebar"] .stRadio > label {
-        color: #8896AB;
-        transition: color 0.2s ease;
+    /* Sidebar headers */
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        font-size: var(--text-caption);
+        font-weight: 600;
+        color: var(--color-text-tertiary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: var(--space-lg);
+        margin-bottom: var(--space-sm);
+        border-bottom: none;
+        padding-bottom: 0;
     }
 
-    [data-testid="stSidebar"] .stRadio > label:hover {
-        color: #00D4AA;
+    /* Sidebar nav items (radio buttons) */
+    [data-testid="stSidebar"] .stRadio > div {
+        gap: var(--space-xs);
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label {
+        background: transparent;
+        border-radius: var(--radius-sm);
+        padding: var(--space-sm) var(--space-md);
+        margin: 0;
+        transition: var(--transition-base);
+        cursor: pointer;
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label:hover {
+        background: var(--color-accent-subtle);
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label[data-checked="true"] {
+        background: var(--color-accent-primary) !important;
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label span {
+        color: var(--color-text-secondary);
+        font-size: var(--text-body);
+        font-weight: 500;
+        transition: var(--transition-base);
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label:hover span {
+        color: var(--color-text-primary);
+    }
+
+    [data-testid="stSidebar"] .stRadio > div > label[data-checked="true"] span {
+        color: white !important;
+        font-weight: 600;
     }
 
     /* ============================================
-       BUTTONS - ENHANCED HOVER
+       METRIC CARDS - Stripe-inspired
        ============================================ */
+    [data-testid="stMetric"] {
+        background: var(--color-bg-secondary) !important;
+        border: 1px solid var(--color-border-subtle);
+        border-left: 3px solid var(--color-accent-primary);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        transition: var(--transition-base);
+        min-height: 120px;
+    }
+
+    [data-testid="stMetric"]:hover {
+        background: var(--color-bg-tertiary) !important;
+        border-color: var(--color-accent-border);
+        border-left-color: var(--color-accent-hover);
+    }
+
+    [data-testid="stMetricLabel"] {
+        font-family: var(--font-family) !important;
+        font-size: var(--text-caption);
+        font-weight: 400;
+        color: var(--color-text-secondary);
+        text-transform: none;
+        letter-spacing: 0;
+    }
+
+    [data-testid="stMetricValue"] {
+        font-family: var(--font-family) !important;
+        font-size: var(--text-metric-lg);
+        font-weight: 700;
+        color: var(--color-text-primary);
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+    }
+
+    [data-testid="stMetricDelta"] {
+        font-size: var(--text-body);
+        font-weight: 500;
+    }
+
+    [data-testid="stMetricDelta"] svg[data-testid="stMetricDeltaIcon-Up"] {
+        color: var(--color-success);
+    }
+    [data-testid="stMetricDelta"] svg[data-testid="stMetricDeltaIcon-Down"] {
+        color: var(--color-danger);
+    }
+
+    [data-testid="stMetricDelta"] > div {
+        color: var(--color-text-secondary);
+    }
+
+    /* Positive/Negative delta colors */
+    [data-testid="stMetricDelta"][data-testid-delta="positive"] > div {
+        color: var(--color-success);
+    }
+    [data-testid="stMetricDelta"][data-testid-delta="negative"] > div {
+        color: var(--color-danger);
+    }
+
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    /* Primary Button */
     .stButton > button {
-        background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 100%);
-        color: #0a0d14;
+        height: 40px;
+        padding: 0 var(--space-md);
+        background: var(--color-accent-primary);
+        color: white;
         border: none;
-        border-radius: 10px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.5rem 1.25rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 2px 8px rgba(0, 212, 170, 0.25);
+        border-radius: var(--radius-sm);
+        font-family: var(--font-family);
+        font-size: var(--text-body);
+        font-weight: 500;
+        transition: var(--transition-base);
+        box-shadow: none;
     }
 
     .stButton > button:hover {
-        box-shadow:
-            0 8px 25px rgba(0, 212, 170, 0.4),
-            0 0 0 1px rgba(0, 212, 170, 0.5);
-        transform: translateY(-3px);
+        background: var(--color-accent-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
     }
 
     .stButton > button:active {
+        background: var(--color-accent-active);
+        transform: translateY(0);
+        box-shadow: none;
+    }
+
+    /* Sidebar buttons */
+    [data-testid="stSidebar"] .stButton > button {
+        width: 100%;
+        background: var(--color-accent-primary);
+        color: white;
+        font-weight: 600;
+    }
+
+    [data-testid="stSidebar"] .stButton > button:hover {
+        background: var(--color-accent-hover);
+    }
+
+    /* Secondary/Download Button */
+    .stDownloadButton > button {
+        background: transparent;
+        border: 1px solid var(--color-border-default);
+        color: var(--color-text-primary);
+        transition: var(--transition-base);
+    }
+
+    .stDownloadButton > button:hover {
+        background: var(--color-bg-tertiary);
+        border-color: var(--color-accent-border);
         transform: translateY(-1px);
     }
 
     /* ============================================
-       FORM CONTROLS - GLASSMORPHISM
+       FORM CONTROLS
        ============================================ */
+    /* Labels */
+    .stSelectbox > label,
+    .stMultiSelect > label,
+    .stTextInput > label,
+    .stNumberInput > label,
+    [data-testid="stWidgetLabel"] {
+        font-size: var(--text-caption);
+        font-weight: 500;
+        color: var(--color-text-secondary) !important;
+        margin-bottom: var(--space-xs);
+    }
+
+    /* Select boxes */
     .stSelectbox > div > div,
     .stMultiSelect > div > div {
-        background: rgba(26, 31, 46, 0.6) !important;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
-        transition: all 0.2s ease;
+        background: var(--color-bg-secondary) !important;
+        border: 1px solid var(--color-border-default);
+        border-radius: var(--radius-sm);
+        transition: var(--transition-base);
     }
 
     .stSelectbox > div > div:hover,
     .stMultiSelect > div > div:hover {
-        border-color: rgba(0, 212, 170, 0.4);
+        border-color: var(--color-accent-border);
     }
 
     .stSelectbox > div > div:focus-within,
     .stMultiSelect > div > div:focus-within {
-        border-color: #00D4AA;
-        box-shadow: 0 0 0 2px rgba(0, 212, 170, 0.2);
+        border-color: var(--color-accent-primary);
+        box-shadow: 0 0 0 2px var(--color-accent-subtle);
     }
 
-    /* Checkbox & Radio styling */
+    /* Select text color */
+    .stSelectbox [data-baseweb="select"] span,
+    .stMultiSelect [data-baseweb="select"] span {
+        color: var(--color-text-primary) !important;
+        font-size: var(--text-body);
+    }
+
+    /* Toggle */
     .stCheckbox, .stRadio {
-        transition: all 0.2s ease;
+        transition: var(--transition-base);
     }
 
     /* ============================================
-       ALERTS - GLASSMORPHISM
+       CHARTS - Clean, data-first
+       ============================================ */
+    .stPlotlyChart {
+        background: var(--color-bg-secondary);
+        border-radius: var(--radius-md);
+        padding: var(--space-lg);
+        border: none;
+        transition: var(--transition-base);
+    }
+
+    .js-plotly-plot {
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    /* ============================================
+       EXPANDERS
+       ============================================ */
+    [data-testid="stExpander"] {
+        border: 1px solid var(--color-border-subtle);
+        border-left: 3px solid var(--color-accent-primary);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        margin-bottom: var(--space-sm);
+    }
+
+    [data-testid="stExpander"] summary {
+        background: var(--color-bg-secondary);
+        padding: var(--space-md);
+        transition: var(--transition-base);
+    }
+
+    [data-testid="stExpander"] summary:hover {
+        background: var(--color-bg-tertiary);
+        border-left-color: var(--color-accent-hover);
+    }
+
+    [data-testid="stExpander"] [data-testid="stExpanderDetails"] {
+        background: var(--color-bg-secondary);
+        padding: var(--space-md);
+        border-top: 1px solid var(--color-border-subtle);
+    }
+
+    /* ============================================
+       ALERTS & NOTIFICATIONS
        ============================================ */
     .stAlert {
-        background: rgba(26, 31, 46, 0.5) !important;
-        backdrop-filter: blur(12px);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.06) !important;
-        animation: fadeIn 0.4s ease-out;
+        background: var(--color-bg-secondary) !important;
+        border: 1px solid var(--color-border-subtle) !important;
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
     }
 
-    /* Success alert accent */
-    .stAlert[data-baseweb="notification"] {
-        border-left: 3px solid #48BB78 !important;
+    /* Warning */
+    .stAlert[data-baseweb="notification"][kind="warning"] {
+        border-left: 3px solid var(--color-warning) !important;
+        background: var(--color-warning-bg) !important;
     }
 
-    /* ============================================
-       DIVIDERS - SUBTLE GRADIENT FADE
-       ============================================ */
-    hr {
-        border: none !important;
-        height: 1px;
-        background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.08) 20%,
-            rgba(255, 255, 255, 0.08) 80%,
-            transparent 100%);
-        margin: 1.5rem 0;
+    /* Success */
+    .stAlert[data-baseweb="notification"][kind="success"] {
+        border-left: 3px solid var(--color-success) !important;
+        background: var(--color-success-bg) !important;
     }
 
-    /* ============================================
-       CHARTS - GLASSMORPHISM CONTAINER
-       ============================================ */
-    .js-plotly-plot {
-        border-radius: 16px;
-        overflow: hidden;
-        animation: fadeIn 0.6s ease-out;
+    /* Error */
+    .stAlert[data-baseweb="notification"][kind="error"] {
+        border-left: 3px solid var(--color-danger) !important;
+        background: var(--color-danger-bg) !important;
     }
 
-    .stPlotlyChart {
-        background: rgba(20, 25, 35, 0.4);
-        backdrop-filter: blur(8px);
-        border-radius: 16px;
-        padding: 0.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        transition: all 0.3s ease;
-    }
-
-    .stPlotlyChart:hover {
-        border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    /* ============================================
-       EXPANDER - GLASSMORPHISM
-       ============================================ */
-    .streamlit-expanderHeader {
-        background: rgba(26, 31, 46, 0.5) !important;
-        backdrop-filter: blur(12px);
-        border-radius: 12px !important;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        transition: all 0.2s ease;
-    }
-
-    .streamlit-expanderHeader:hover {
-        background: rgba(26, 31, 46, 0.7) !important;
-        border-color: rgba(0, 212, 170, 0.3);
-    }
-
-    /* ============================================
-       DOWNLOAD BUTTON
-       ============================================ */
-    .stDownloadButton > button {
-        background: rgba(45, 55, 72, 0.6);
-        backdrop-filter: blur(12px);
-        color: #E2E8F0;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        transition: all 0.3s ease;
-    }
-
-    .stDownloadButton > button:hover {
-        background: rgba(45, 55, 72, 0.8);
-        border-color: rgba(0, 212, 170, 0.4);
-        transform: translateY(-2px);
-    }
-
-    /* ============================================
-       LIVE INDICATOR PULSE
-       ============================================ */
-    .live-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.75rem;
-        color: #48BB78;
-        font-weight: 500;
-    }
-
-    .live-dot {
-        width: 8px;
-        height: 8px;
-        background: #48BB78;
-        border-radius: 50%;
-        animation: pulse 2s infinite;
-        box-shadow: 0 0 8px rgba(72, 187, 120, 0.6);
-    }
-
-    /* ============================================
-       SEGMENTED PILL BUTTONS
-       ============================================ */
-    .pill-container {
-        display: inline-flex;
-        background: rgba(26, 31, 46, 0.6);
-        backdrop-filter: blur(12px);
-        border-radius: 12px;
-        padding: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        gap: 4px;
-    }
-
-    .pill-button {
-        padding: 8px 16px;
-        border-radius: 8px;
-        border: none;
-        background: transparent;
-        color: #8896AB;
-        font-family: 'Urbanist', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .pill-button:hover {
-        color: #E2E8F0;
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .pill-button.active {
-        background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 100%);
-        color: #0a0d14;
-        font-weight: 600;
-        box-shadow: 0 2px 8px rgba(0, 212, 170, 0.3);
+    /* Info */
+    .stAlert[data-baseweb="notification"][kind="info"] {
+        border-left: 3px solid var(--color-info) !important;
+        background: var(--color-info-bg) !important;
     }
 
     /* ============================================
        DATA TABLES
        ============================================ */
     .stDataFrame {
-        background: rgba(26, 31, 46, 0.4) !important;
-        backdrop-filter: blur(12px);
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
+        background: var(--color-bg-secondary) !important;
+        border: 1px solid var(--color-border-subtle);
+        border-radius: var(--radius-md);
         overflow: hidden;
+    }
+
+    .stDataFrame [data-testid="stDataFrameResizable"] {
+        background: var(--color-bg-secondary);
     }
 
     /* ============================================
        TABS
        ============================================ */
     .stTabs [data-baseweb="tab-list"] {
-        background: rgba(26, 31, 46, 0.4);
-        border-radius: 12px;
-        padding: 4px;
-        gap: 4px;
+        background: transparent;
+        gap: var(--space-xs);
+        border-bottom: 1px solid var(--color-border-subtle);
+        padding-bottom: 0;
     }
 
     .stTabs [data-baseweb="tab"] {
-        border-radius: 8px;
-        color: #8896AB;
+        background: transparent;
+        border: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+        color: var(--color-text-secondary);
         font-weight: 500;
-        transition: all 0.2s ease;
+        padding: var(--space-sm) var(--space-md);
+        transition: var(--transition-base);
     }
 
     .stTabs [data-baseweb="tab"]:hover {
-        color: #E2E8F0;
-        background: rgba(255, 255, 255, 0.05);
+        color: var(--color-text-primary);
+        background: transparent;
     }
 
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #00D4AA 0%, #00A3FF 100%) !important;
-        color: #0a0d14 !important;
+        background: transparent !important;
+        color: var(--color-accent-primary) !important;
+        border-bottom-color: var(--color-accent-primary) !important;
     }
 
     /* ============================================
-       SCROLLBAR - SUBTLE
+       DIVIDERS
+       ============================================ */
+    hr {
+        border: none !important;
+        height: 1px;
+        background: var(--color-border-subtle);
+        margin: var(--space-lg) 0;
+    }
+
+    /* ============================================
+       SCROLLBARS
        ============================================ */
     ::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
+        width: 8px;
+        height: 8px;
     }
 
     ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 3px;
+        background: transparent;
     }
 
     ::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 3px;
+        background: var(--color-border-default);
+        border-radius: var(--radius-full);
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.25);
+        background: var(--color-border-strong);
+    }
+
+    /* ============================================
+       TOOLTIPS
+       ============================================ */
+    [data-baseweb="tooltip"] {
+        background: var(--color-bg-tertiary) !important;
+        border: 1px solid var(--color-border-default);
+        border-radius: var(--radius-sm);
+        color: var(--color-text-primary);
+        font-size: var(--text-caption);
+    }
+
+    /* ============================================
+       LIVE INDICATOR
+       ============================================ */
+    .live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-sm);
+        font-size: var(--text-caption);
+        color: var(--color-success);
+        font-weight: 500;
+    }
+
+    .live-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--color-success);
+        border-radius: var(--radius-full);
+        animation: pulse 2s infinite;
+    }
+
+    /* ============================================
+       LOADING SKELETON
+       ============================================ */
+    .skeleton {
+        background: linear-gradient(
+            90deg,
+            var(--color-bg-secondary) 0%,
+            var(--color-bg-tertiary) 50%,
+            var(--color-bg-secondary) 100%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s ease-in-out infinite;
+        border-radius: var(--radius-sm);
     }
 
     /* ============================================
@@ -453,31 +682,62 @@ st.markdown("""
        ============================================ */
     .footer-text {
         text-align: center;
-        color: #5A6578;
-        padding: 2rem 1rem;
-        font-size: 0.8rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.04);
-        margin-top: 2rem;
+        color: var(--color-text-tertiary);
+        padding: var(--space-2xl) var(--space-md);
+        font-size: var(--text-caption);
+        border-top: 1px solid var(--color-border-subtle);
+        margin-top: var(--space-2xl);
     }
 
     .footer-text a {
-        color: #00D4AA;
+        color: var(--color-accent-primary);
         text-decoration: none;
-        transition: color 0.2s ease;
+        transition: var(--transition-base);
     }
 
     .footer-text a:hover {
-        color: #00A3FF;
+        color: var(--color-accent-hover);
     }
 
     /* ============================================
-       TOOLTIP STYLING
+       FOCUS STATES (Accessibility)
        ============================================ */
-    [data-baseweb="tooltip"] {
-        background: rgba(26, 31, 46, 0.95) !important;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
+    *:focus {
+        outline: 2px solid var(--color-accent-primary);
+        outline-offset: 2px;
+    }
+
+    button:focus:not(:focus-visible),
+    a:focus:not(:focus-visible) {
+        outline: none;
+    }
+
+    /* ============================================
+       FIX: PHANTOM TEXT (Material Icons)
+       The "keyb" and "keyboard_arrow_right" text appears
+       when Material Symbols font fails to load
+       ============================================ */
+    /* Hide icon text when font renders correctly */
+    [data-testid="stIconMaterial"],
+    span[translate="no"][class*="st-emotion-cache"] {
+        overflow: hidden;
+        font-family: 'Material Symbols Rounded' !important;
+    }
+
+    /* Fallback: If font fails, hide the raw text */
+    [data-testid="stExpander"] summary > span > span:first-child {
+        font-family: 'Material Symbols Rounded' !important;
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Ensure sidebar radio items don't show phantom text */
+    [data-testid="stSidebar"] [role="radiogroup"] label > div:first-child {
+        display: none;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -496,6 +756,41 @@ def render_live_indicator(timestamp_str=None):
     st.markdown(live_indicator(timestamp_str), unsafe_allow_html=True)
 
 
+def auto_refresh_component(interval_seconds: int, key: str = "auto_refresh"):
+    """
+    Inject JavaScript to auto-refresh the page at specified intervals.
+    Only active when auto-refresh is enabled.
+
+    Args:
+        interval_seconds: Time between page refreshes in seconds
+        key: Unique key for the component
+    """
+    st.markdown(
+        f"""
+        <script>
+            // Auto-refresh timer
+            (function() {{
+                const intervalMs = {interval_seconds * 1000};
+                const key = '{key}';
+
+                // Clear any existing timer
+                if (window.autoRefreshTimer) {{
+                    clearTimeout(window.autoRefreshTimer);
+                }}
+
+                // Set new timer
+                window.autoRefreshTimer = setTimeout(function() {{
+                    window.location.reload();
+                }}, intervalMs);
+
+                console.log('Auto-refresh scheduled in ' + {interval_seconds} + ' seconds');
+            }})();
+        </script>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 def fetch_api(endpoint, silent=False):
     """Fetch data from API. Set silent=True to suppress error messages."""
     try:
@@ -508,35 +803,63 @@ def fetch_api(endpoint, silent=False):
         return None
 
 
-# Common Plotly layout config for consistent styling
+# Common Plotly layout config - Design System v2.0
+# Colors from DESIGN_SYSTEM.md
+CHART_COLORS = [
+    '#14b8a6',  # Teal - primary
+    '#8b5cf6',  # Purple - secondary
+    '#f59e0b',  # Amber - tertiary
+    '#ec4899',  # Pink - quaternary
+    '#06b6d4',  # Cyan - quinary
+]
+
 PLOTLY_LAYOUT_DEFAULTS = dict(
     template='plotly_dark',
     paper_bgcolor='rgba(0,0,0,0)',
     plot_bgcolor='rgba(0,0,0,0)',
-    font=dict(family='Urbanist, sans-serif', color='#A0AEC0'),
-    title_font=dict(size=16, color='#E2E8F0'),
+    font=dict(
+        family='Urbanist, -apple-system, BlinkMacSystemFont, sans-serif',
+        color='#a3a3a3',  # --color-text-secondary
+        size=12
+    ),
+    title_font=dict(
+        size=16,
+        color='#ffffff',  # --color-text-primary
+        family='Urbanist, sans-serif'
+    ),
     hovermode='x unified',
     hoverlabel=dict(
-        bgcolor='rgba(26, 31, 46, 0.95)',
-        bordercolor='rgba(255, 255, 255, 0.1)',
-        font=dict(family='Urbanist, sans-serif', size=13)
+        bgcolor='#1e1e1e',  # --color-bg-tertiary
+        bordercolor='#404040',  # --color-border-default
+        font=dict(family='Urbanist, sans-serif', size=12, color='#ffffff')
     ),
     xaxis=dict(
-        gridcolor='rgba(45, 55, 72, 0.5)',
-        zerolinecolor='#2D3748',
-        tickfont=dict(size=11)
+        gridcolor='rgba(255, 255, 255, 0.05)',  # --color-chart-grid
+        zerolinecolor='#404040',  # --color-border-default
+        tickfont=dict(size=12, color='#737373'),  # --color-chart-axis
+        linecolor='#262626',  # --color-border-subtle
+        showgrid=True,
+        gridwidth=1
     ),
     yaxis=dict(
-        gridcolor='rgba(45, 55, 72, 0.5)',
-        zerolinecolor='#2D3748',
-        tickfont=dict(size=11)
+        gridcolor='rgba(255, 255, 255, 0.05)',  # --color-chart-grid
+        zerolinecolor='#404040',  # --color-border-default
+        tickfont=dict(size=12, color='#737373'),  # --color-chart-axis
+        linecolor='#262626',  # --color-border-subtle
+        showgrid=True,
+        gridwidth=1
     ),
     margin=dict(l=16, r=16, t=48, b=16),
+    legend=dict(
+        font=dict(size=12, color='#a3a3a3'),
+        bgcolor='rgba(0,0,0,0)',
+        borderwidth=0
+    )
 )
 
 
 def create_line_chart(data, title, y_label):
-    """Create a line chart with dark theme and animations"""
+    """Create a line chart with Design System v2.0 styling"""
     df = pd.DataFrame(data['data'])
     df['timestamp'] = pd.to_datetime(df['timestamp'])
 
@@ -546,9 +869,9 @@ def create_line_chart(data, title, y_label):
         y=df['value'],
         mode='lines',
         name=data['name'],
-        line=dict(color='#00D4AA', width=2),
+        line=dict(color=CHART_COLORS[0], width=2),  # Teal primary
         fill='tozeroy',
-        fillcolor='rgba(0, 212, 170, 0.1)'
+        fillcolor='rgba(20, 184, 166, 0.1)'  # Teal with 10% opacity
     ))
 
     fig.update_layout(
@@ -557,11 +880,6 @@ def create_line_chart(data, title, y_label):
         yaxis_title=y_label,
         height=400,
         **PLOTLY_LAYOUT_DEFAULTS
-    )
-
-    # Enable animations
-    fig.update_layout(
-        transition=dict(duration=500, easing='cubic-in-out')
     )
 
     return fig
@@ -698,20 +1016,32 @@ st.sidebar.header("Navigation")
 page = st.sidebar.radio(
     "Select View",
     ["Overview", "Sector Performance", "Yield Curve", "Liquidity", "Market Regime",
-     "Inflation Monitor", "Recession Watch", "Market Overview", "Custom Analysis", "FAQ"]
+     "Inflation Monitor", "Recession Watch", "Market Overview", "Credit Spreads",
+     "Currency Monitor", "Commodities", "Global Markets", "Sentiment", "Custom Analysis", "FAQ"]
 )
 
 # Refresh button in sidebar
 st.sidebar.divider()
 st.sidebar.subheader("Data Management")
+
+# Initialize session state for auto-refresh
+if 'auto_refresh_enabled' not in st.session_state:
+    st.session_state.auto_refresh_enabled = False
+if 'last_fred_refresh' not in st.session_state:
+    st.session_state.last_fred_refresh = None
+if 'last_market_refresh' not in st.session_state:
+    st.session_state.last_market_refresh = None
+
+# Manual refresh buttons
 col1, col2 = st.sidebar.columns(2)
 with col1:
-    if st.button("Refresh FRED", use_container_width=True):
-        with st.spinner("Refreshing FRED data..."):
+    if st.button("⟳ FRED", use_container_width=True, help="Refresh FRED economic data"):
+        with st.spinner("Refreshing FRED..."):
             try:
                 response = requests.post(f"{API_BASE}/api/refresh?source=fred", timeout=300)
                 if response.status_code == 200:
-                    st.sidebar.success("FRED data refreshed!")
+                    st.session_state.last_fred_refresh = datetime.now()
+                    st.sidebar.success("FRED refreshed!")
                     st.rerun()
                 else:
                     st.sidebar.error("Refresh failed")
@@ -719,22 +1049,132 @@ with col1:
                 st.sidebar.error(f"Error: {str(e)}")
 
 with col2:
-    if st.button("Refresh Market", use_container_width=True):
-        with st.spinner("Refreshing market data..."):
+    if st.button("⟳ Market", use_container_width=True, help="Refresh market price data"):
+        with st.spinner("Refreshing Market..."):
             try:
                 response = requests.post(f"{API_BASE}/api/refresh?source=market", timeout=300)
                 if response.status_code == 200:
-                    st.sidebar.success("Market data refreshed!")
+                    st.session_state.last_market_refresh = datetime.now()
+                    st.sidebar.success("Market refreshed!")
                     st.rerun()
                 else:
                     st.sidebar.error("Refresh failed")
             except Exception as e:
                 st.sidebar.error(f"Error: {str(e)}")
 
+# Auto-refresh settings
+st.sidebar.divider()
+st.sidebar.subheader("Auto-Refresh")
+
+auto_refresh = st.sidebar.toggle("Enable Auto-Refresh", value=st.session_state.auto_refresh_enabled, key="auto_refresh_toggle")
+st.session_state.auto_refresh_enabled = auto_refresh
+
+if auto_refresh:
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        fred_interval = st.selectbox(
+            "FRED Interval",
+            options=[15, 30, 60, 120],
+            index=2,
+            format_func=lambda x: f"{x} min",
+            key="fred_interval",
+            help="FRED data updates infrequently (daily/weekly/monthly)"
+        )
+    with col2:
+        market_interval = st.selectbox(
+            "Market Interval",
+            options=[5, 10, 15, 30, 60],
+            index=2,
+            format_func=lambda x: f"{x} min",
+            key="market_interval",
+            help="Market data can update more frequently"
+        )
+
+    # Check if refresh is needed
+    now = datetime.now()
+
+    # FRED auto-refresh check
+    fred_needs_refresh = False
+    if st.session_state.last_fred_refresh is None:
+        fred_needs_refresh = True
+    else:
+        fred_elapsed = (now - st.session_state.last_fred_refresh).total_seconds() / 60
+        if fred_elapsed >= fred_interval:
+            fred_needs_refresh = True
+
+    # Market auto-refresh check
+    market_needs_refresh = False
+    if st.session_state.last_market_refresh is None:
+        market_needs_refresh = True
+    else:
+        market_elapsed = (now - st.session_state.last_market_refresh).total_seconds() / 60
+        if market_elapsed >= market_interval:
+            market_needs_refresh = True
+
+    # Perform auto-refresh if needed
+    if fred_needs_refresh or market_needs_refresh:
+        refresh_status = st.sidebar.empty()
+
+        if fred_needs_refresh:
+            refresh_status.info("Auto-refreshing FRED data...")
+            try:
+                response = requests.post(f"{API_BASE}/api/refresh?source=fred", timeout=300)
+                if response.status_code == 200:
+                    st.session_state.last_fred_refresh = now
+            except:
+                pass
+
+        if market_needs_refresh:
+            refresh_status.info("Auto-refreshing Market data...")
+            try:
+                response = requests.post(f"{API_BASE}/api/refresh?source=market", timeout=300)
+                if response.status_code == 200:
+                    st.session_state.last_market_refresh = now
+            except:
+                pass
+
+        refresh_status.empty()
+        if fred_needs_refresh or market_needs_refresh:
+            st.rerun()
+
+    # Display next refresh countdown
+    st.sidebar.caption("**Next refresh:**")
+    col1, col2 = st.sidebar.columns(2)
+
+    with col1:
+        if st.session_state.last_fred_refresh:
+            fred_next = fred_interval - int((now - st.session_state.last_fred_refresh).total_seconds() / 60)
+            fred_next = max(0, fred_next)
+            st.caption(f"FRED: {fred_next} min")
+        else:
+            st.caption("FRED: Now")
+
+    with col2:
+        if st.session_state.last_market_refresh:
+            market_next = market_interval - int((now - st.session_state.last_market_refresh).total_seconds() / 60)
+            market_next = max(0, market_next)
+            st.caption(f"Market: {market_next} min")
+        else:
+            st.caption("Market: Now")
+
+    # Calculate the minimum refresh interval and trigger page refresh
+    min_interval = min(fred_interval, market_interval)
+    auto_refresh_component(min_interval * 60, key="dashboard_auto_refresh")
+    st.sidebar.caption(f"_Page refreshes every {min_interval} min_")
+
 # Live data indicator in sidebar
 st.sidebar.divider()
 last_update = datetime.now().strftime("%H:%M")
 st.sidebar.markdown(live_indicator(last_update), unsafe_allow_html=True)
+
+# Show last refresh times if available
+if st.session_state.last_fred_refresh or st.session_state.last_market_refresh:
+    refresh_info = []
+    if st.session_state.last_fred_refresh:
+        refresh_info.append(f"FRED: {st.session_state.last_fred_refresh.strftime('%H:%M')}")
+    if st.session_state.last_market_refresh:
+        refresh_info.append(f"Market: {st.session_state.last_market_refresh.strftime('%H:%M')}")
+    st.sidebar.caption(f"Last refresh: {' | '.join(refresh_info)}")
 
 # Page: Overview
 if page == "Overview":
@@ -806,8 +1246,8 @@ if page == "Overview":
 
     # Fetch multiple assets
     assets = [
-        ("^GSPC", "S&P 500", "#00D4AA"),
-        ("^IXIC", "Nasdaq", "#00A3FF"),
+        ("^GSPC", "S&P 500", "#14b8a6"),
+        ("^IXIC", "Nasdaq", "#8b5cf6"),
         ("^DJI", "Dow Jones", "#F6AD55"),
         ("BTC-USD", "Bitcoin", "#B794F4")
     ]
@@ -957,9 +1397,9 @@ elif page == "Sector Performance":
             x=returns_df['Sector'].tolist(),
             y=year_cols,
             colorscale=[
-                [0, '#FC8181'],      # Red for negative
+                [0, '#ef4444'],      # Red for negative
                 [0.5, '#1A1F2E'],    # Dark for zero
-                [1, '#48BB78']       # Green for positive
+                [1, '#10b981']       # Green for positive
             ],
             zmid=0,
             text=[[f"{v:.1f}%" if pd.notna(v) else "" for v in row] for row in heatmap_data],
@@ -1015,7 +1455,7 @@ elif page == "Sector Performance":
 
             with col1:
                 # CAGR bar chart
-                colors = ['#48BB78' if v >= 0 else '#FC8181' for v in avg_df['CAGR']]
+                colors = ['#10b981' if v >= 0 else '#ef4444' for v in avg_df['CAGR']]
                 fig_cagr = go.Figure(go.Bar(
                     x=avg_df['CAGR'],
                     y=avg_df['Sector'],
@@ -1063,7 +1503,7 @@ elif page == "Sector Performance":
 
         if ytd_data:
             ytd_df = pd.DataFrame(ytd_data).sort_values("YTD Return", ascending=True)
-            colors = ['#48BB78' if v >= 0 else '#FC8181' for v in ytd_df['YTD Return']]
+            colors = ['#10b981' if v >= 0 else '#ef4444' for v in ytd_df['YTD Return']]
 
             fig = go.Figure(go.Bar(
                 x=ytd_df['YTD Return'],
@@ -1370,7 +1810,7 @@ elif page == "Yield Curve":
             y=yield_df['yield'],
             mode='lines+markers',
             name='Current Curve',
-            line=dict(color='#00D4AA', width=3),
+            line=dict(color='#14b8a6', width=3),
             marker=dict(size=12),
             text=[f"{y:.2f}%" for y in yield_df['yield']],
             textposition='top center',
@@ -1440,8 +1880,8 @@ elif page == "Yield Curve":
             y=df['value'],
             mode='lines',
             fill='tozeroy',
-            fillcolor='rgba(252, 129, 129, 0.2)',
-            line=dict(color='#FC8181', width=2)
+            fillcolor='rgba(239, 68, 68, 0.2)',
+            line=dict(color='#ef4444', width=2)
         ))
         fig.add_hline(y=0, line_dash="dash", line_color="#E2E8F0", annotation_text="Inversion Line")
 
@@ -1542,8 +1982,8 @@ elif page == "Liquidity":
             y=df['value'],
             mode='lines',
             fill='tozeroy',
-            fillcolor='rgba(0, 212, 170, 0.15)',
-            line=dict(color='#00D4AA', width=2)
+            fillcolor='rgba(20, 184, 166, 0.15)',
+            line=dict(color='#14b8a6', width=2)
         ))
 
         fig.update_layout(
@@ -1605,7 +2045,7 @@ elif page == "Liquidity":
                 x=df['timestamp'],
                 y=df['value'],
                 mode='lines',
-                line=dict(color='#00A3FF', width=2)
+                line=dict(color='#8b5cf6', width=2)
             ))
 
             fig.update_layout(
@@ -1685,7 +2125,7 @@ elif page == "Market Regime":
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=growth_df['timestamp'], y=growth_df['pct'], mode='lines',
-                                 name='Growth (IWF)', line=dict(color='#00D4AA', width=2)))
+                                 name='Growth (IWF)', line=dict(color='#14b8a6', width=2)))
         fig.add_trace(go.Scatter(x=value_df['timestamp'], y=value_df['pct'], mode='lines',
                                  name='Value (IWD)', line=dict(color='#F6AD55', width=2)))
 
@@ -1734,7 +2174,7 @@ elif page == "Market Regime":
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=spy_df['timestamp'], y=spy_df['pct'], mode='lines',
-                                 name='Large Cap (SPY)', line=dict(color='#00A3FF', width=2)))
+                                 name='Large Cap (SPY)', line=dict(color='#8b5cf6', width=2)))
         fig.add_trace(go.Scatter(x=iwm_df['timestamp'], y=iwm_df['pct'], mode='lines',
                                  name='Small Cap (IWM)', line=dict(color='#B794F4', width=2)))
 
@@ -1770,9 +2210,9 @@ elif page == "Market Regime":
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=spy_df['timestamp'], y=spy_df['pct'], mode='lines',
-                                 name='US (SPY)', line=dict(color='#00D4AA', width=2)))
+                                 name='US (SPY)', line=dict(color='#14b8a6', width=2)))
         fig.add_trace(go.Scatter(x=efa_df['timestamp'], y=efa_df['pct'], mode='lines',
-                                 name='Developed (EFA)', line=dict(color='#00A3FF', width=2)))
+                                 name='Developed (EFA)', line=dict(color='#8b5cf6', width=2)))
         fig.add_trace(go.Scatter(x=eem_df['timestamp'], y=eem_df['pct'], mode='lines',
                                  name='Emerging (EEM)', line=dict(color='#F6AD55', width=2)))
 
@@ -1876,8 +2316,8 @@ elif page == "Inflation Monitor":
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['yoy'], mode='lines', fill='tozeroy',
-                                 fillcolor='rgba(252, 129, 129, 0.15)', line=dict(color='#FC8181', width=2)))
-        fig.add_hline(y=2, line_dash="dash", line_color="#48BB78", annotation_text="2% Target")
+                                 fillcolor='rgba(239, 68, 68, 0.15)', line=dict(color='#ef4444', width=2)))
+        fig.add_hline(y=2, line_dash="dash", line_color="#10b981", annotation_text="2% Target")
         fig.update_layout(xaxis_title="Date", yaxis_title="YoY Change (%)", template='plotly_dark', height=400,
                          paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                          xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -1891,12 +2331,12 @@ elif page == "Inflation Monitor":
 
     # CPI component series
     cpi_components = [
-        ("CUSR0000SAH1", "Shelter (Housing/Rent)", "#FC8181"),
+        ("CUSR0000SAH1", "Shelter (Housing/Rent)", "#ef4444"),
         ("CUSR0000SAF11", "Food at Home", "#F6AD55"),
-        ("CUSR0000SEFV", "Food Away from Home", "#48BB78"),
-        ("CUUR0000SETB01", "Gasoline", "#00A3FF"),
+        ("CUSR0000SEFV", "Food Away from Home", "#10b981"),
+        ("CUUR0000SETB01", "Gasoline", "#8b5cf6"),
         ("CUSR0000SEEB", "Electricity", "#B794F4"),
-        ("CUSR0000SAM2", "Medical Care", "#00D4AA"),
+        ("CUSR0000SAM2", "Medical Care", "#14b8a6"),
         ("CUSR0000SETA02", "Used Vehicles", "#ED64A6"),
         ("CPIAPPSL", "Apparel", "#A0AEC0"),
     ]
@@ -1909,7 +2349,7 @@ elif page == "Inflation Monitor":
 
     if component_yoy:
         comp_df = pd.DataFrame(component_yoy).sort_values("YoY %", ascending=True)
-        colors = ['#48BB78' if v <= 2 else '#F6AD55' if v <= 5 else '#FC8181' for v in comp_df['YoY %']]
+        colors = ['#10b981' if v <= 2 else '#F6AD55' if v <= 5 else '#ef4444' for v in comp_df['YoY %']]
 
         fig = go.Figure(go.Bar(
             x=comp_df['YoY %'],
@@ -1919,7 +2359,7 @@ elif page == "Inflation Monitor":
             text=[f"{v:.1f}%" for v in comp_df['YoY %']],
             textposition='outside'
         ))
-        fig.add_vline(x=2, line_dash="dash", line_color="#48BB78", annotation_text="2% Target")
+        fig.add_vline(x=2, line_dash="dash", line_color="#10b981", annotation_text="2% Target")
         fig.update_layout(title="Current YoY Inflation by Category", xaxis_title="YoY Change (%)", yaxis_title="",
                          template='plotly_dark', height=400, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                          xaxis=dict(gridcolor='#2D3748'))
@@ -2364,7 +2804,7 @@ elif page == "Inflation Monitor":
         yoy_df['display_label'] = yoy_df.apply(lambda r: f"{get_category_icon(r['category'])} {r['category']}", axis=1)
 
         # Color bars by inflation level
-        bar_colors = ['#48BB78' if v <= 2 else '#F6AD55' if v <= 5 else '#FC8181' for v in yoy_df['yoy']]
+        bar_colors = ['#10b981' if v <= 2 else '#F6AD55' if v <= 5 else '#ef4444' for v in yoy_df['yoy']]
 
         fig = go.Figure(go.Bar(
             x=yoy_df['yoy'],
@@ -2374,7 +2814,7 @@ elif page == "Inflation Monitor":
             text=[f"{v:+.1f}%" for v in yoy_df['yoy']],
             textposition='outside'
         ))
-        fig.add_vline(x=2, line_dash="dash", line_color="#48BB78", annotation_text="2% Target")
+        fig.add_vline(x=2, line_dash="dash", line_color="#10b981", annotation_text="2% Target")
         fig.update_layout(
             title="Current Year-over-Year Inflation by Category",
             xaxis_title="YoY Change (%)",
@@ -2460,7 +2900,7 @@ elif page == "Inflation Monitor":
                 ))
 
         fig.add_hline(y=0, line_dash="solid", line_color="#4A5568")
-        fig.add_hline(y=2, line_dash="dash", line_color="#48BB78", annotation_text="2% Target")
+        fig.add_hline(y=2, line_dash="dash", line_color="#10b981", annotation_text="2% Target")
 
         fig.update_layout(
             title=f"Contribution to Headline CPI Inflation by Category ({contrib_timeframe})",
@@ -2509,8 +2949,8 @@ elif page == "Inflation Monitor":
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines', fill='tozeroy',
-                                 fillcolor='rgba(0, 163, 255, 0.15)', line=dict(color='#00A3FF', width=2)))
-        fig.add_hline(y=2, line_dash="dash", line_color="#48BB78", annotation_text="2% Target")
+                                 fillcolor='rgba(139, 92, 246, 0.15)', line=dict(color='#8b5cf6', width=2)))
+        fig.add_hline(y=2, line_dash="dash", line_color="#10b981", annotation_text="2% Target")
         fig.update_layout(xaxis_title="Date", yaxis_title="Breakeven Rate (%)", template='plotly_dark', height=400,
                          paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                          xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -2585,7 +3025,7 @@ elif page == "Recession Watch":
                 mode='lines',
                 fill='tozeroy',
                 fillcolor='rgba(255, 99, 99, 0.2)',
-                line=dict(color='#FC8181', width=2),
+                line=dict(color='#ef4444', width=2),
                 name='Yield Spread'
             ))
 
@@ -2613,7 +3053,7 @@ elif page == "Recession Watch":
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines',
-                                     fill='tozeroy', fillcolor='rgba(0, 212, 170, 0.1)', line=dict(color='#00D4AA', width=2)))
+                                     fill='tozeroy', fillcolor='rgba(20, 184, 166, 0.1)', line=dict(color='#14b8a6', width=2)))
             fig.update_layout(xaxis_title="Date", yaxis_title="Thousands of Units", template='plotly_dark', height=350,
                              paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                              xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -2642,7 +3082,7 @@ elif page == "Recession Watch":
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines',
-                                     fill='tozeroy', fillcolor='rgba(0, 163, 255, 0.15)', line=dict(color='#00A3FF', width=2)))
+                                     fill='tozeroy', fillcolor='rgba(139, 92, 246, 0.15)', line=dict(color='#8b5cf6', width=2)))
             fig.update_layout(xaxis_title="Date", yaxis_title="Index", template='plotly_dark', height=350,
                              paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                              xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -2738,9 +3178,9 @@ elif page == "Market Overview":
 
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=spy_df['timestamp'], y=spy_df['normalized'],
-                                     name=f"SPY (Cap-Weighted) {spy_ret:+.1f}%", line=dict(color='#00D4AA', width=2)))
+                                     name=f"SPY (Cap-Weighted) {spy_ret:+.1f}%", line=dict(color='#14b8a6', width=2)))
             fig.add_trace(go.Scatter(x=rsp_df['timestamp'], y=rsp_df['normalized'],
-                                     name=f"RSP (Equal-Weight) {rsp_ret:+.1f}%", line=dict(color='#00A3FF', width=2)))
+                                     name=f"RSP (Equal-Weight) {rsp_ret:+.1f}%", line=dict(color='#8b5cf6', width=2)))
             fig.update_layout(title="Cap-Weighted vs Equal-Weight S&P 500", xaxis_title="", yaxis_title="Indexed (Start=100)",
                              template='plotly_dark', height=350, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                              xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'), hovermode='x unified')
@@ -2767,7 +3207,7 @@ elif page == "Market Overview":
 
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=spy_df['timestamp'], y=spy_df['normalized'],
-                                     name=f"SPY (Large Cap) {spy_ret:+.1f}%", line=dict(color='#00D4AA', width=2)))
+                                     name=f"SPY (Large Cap) {spy_ret:+.1f}%", line=dict(color='#14b8a6', width=2)))
             fig.add_trace(go.Scatter(x=iwm_df['timestamp'], y=iwm_df['normalized'],
                                      name=f"IWM (Small Cap) {iwm_ret:+.1f}%", line=dict(color='#F6AD55', width=2)))
             fig.update_layout(title="Large Cap vs Small Cap", xaxis_title="", yaxis_title="Indexed (Start=100)",
@@ -2804,12 +3244,12 @@ elif page == "Market Overview":
 
     # Factor performance comparison
     factors = [
-        ("VUG", "Growth", "#00D4AA"),
-        ("VTV", "Value", "#00A3FF"),
+        ("VUG", "Growth", "#14b8a6"),
+        ("VTV", "Value", "#8b5cf6"),
         ("MTUM", "Momentum", "#F6AD55"),
         ("QUAL", "Quality", "#B794F4"),
-        ("USMV", "Low Vol", "#FC8181"),
-        ("IWM", "Small Cap", "#48BB78"),
+        ("USMV", "Low Vol", "#ef4444"),
+        ("IWM", "Small Cap", "#10b981"),
     ]
 
     factor_returns = []
@@ -2882,7 +3322,7 @@ elif page == "Market Overview":
 
     with col1:
         st.markdown("**Developed Markets Comparison**")
-        developed = [("SPY", "US", "#00D4AA"), ("VGK", "Europe", "#00A3FF"), ("EWJ", "Japan", "#F6AD55"), ("EWU", "UK", "#B794F4")]
+        developed = [("SPY", "US", "#14b8a6"), ("VGK", "Europe", "#8b5cf6"), ("EWJ", "Japan", "#F6AD55"), ("EWU", "UK", "#B794F4")]
         fig = go.Figure()
         for ticker, name, color in developed:
             ret, df = get_return(ticker)
@@ -2898,7 +3338,7 @@ elif page == "Market Overview":
 
     with col2:
         st.markdown("**Emerging Markets Comparison**")
-        emerging = [("EEM", "EM Broad", "#00D4AA"), ("FXI", "China", "#FC8181"), ("INDA", "India", "#48BB78"), ("EWZ", "Brazil", "#F6AD55")]
+        emerging = [("EEM", "EM Broad", "#14b8a6"), ("FXI", "China", "#ef4444"), ("INDA", "India", "#10b981"), ("EWZ", "Brazil", "#F6AD55")]
         fig = go.Figure()
         for ticker, name, color in emerging:
             ret, df = get_return(ticker)
@@ -2942,7 +3382,7 @@ elif page == "Market Overview":
 
     with col1:
         st.markdown("**Treasury ETFs (Duration Exposure)**")
-        treasuries = [("SHY", "1-3Y Treasury", "#48BB78"), ("IEF", "7-10Y Treasury", "#00A3FF"), ("TLT", "20+Y Treasury", "#FC8181")]
+        treasuries = [("SHY", "1-3Y Treasury", "#10b981"), ("IEF", "7-10Y Treasury", "#8b5cf6"), ("TLT", "20+Y Treasury", "#ef4444")]
         fig = go.Figure()
         for ticker, name, color in treasuries:
             ret, df = get_return(ticker)
@@ -2958,7 +3398,7 @@ elif page == "Market Overview":
 
     with col2:
         st.markdown("**Credit Markets (Risk Appetite)**")
-        credit = [("LQD", "Investment Grade", "#00D4AA"), ("HYG", "High Yield", "#F6AD55"), ("EMB", "EM Bonds", "#B794F4")]
+        credit = [("LQD", "Investment Grade", "#14b8a6"), ("HYG", "High Yield", "#F6AD55"), ("EMB", "EM Bonds", "#B794F4")]
         fig = go.Figure()
         for ticker, name, color in credit:
             ret, df = get_return(ticker)
@@ -3028,8 +3468,8 @@ elif page == "Market Overview":
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines',
                                     fill='tozeroy', fillcolor='rgba(246, 173, 85, 0.15)',
                                     line=dict(color='#F6AD55', width=2), name='VIX'))
-            fig.add_hline(y=20, line_dash="dash", line_color="#48BB78", annotation_text="Normal (20)")
-            fig.add_hline(y=30, line_dash="dash", line_color="#FC8181", annotation_text="Elevated (30)")
+            fig.add_hline(y=20, line_dash="dash", line_color="#10b981", annotation_text="Normal (20)")
+            fig.add_hline(y=30, line_dash="dash", line_color="#ef4444", annotation_text="Elevated (30)")
             fig.update_layout(title="VIX Volatility Index", xaxis_title="", yaxis_title="VIX Level",
                              template='plotly_dark', height=350, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                              xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -3111,8 +3551,8 @@ elif page == "Market Overview":
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines',
-                                    fill='tozeroy', fillcolor='rgba(0, 212, 170, 0.15)',
-                                    line=dict(color='#00D4AA', width=2)))
+                                    fill='tozeroy', fillcolor='rgba(20, 184, 166, 0.15)',
+                                    line=dict(color='#14b8a6', width=2)))
             fig.update_layout(title="S&P 500 (SPY) - Total Market Proxy", xaxis_title="", yaxis_title="Price ($)",
                              template='plotly_dark', height=350, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                              xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -3138,7 +3578,7 @@ elif page == "Market Overview":
                 title={'text': "Market Cap / GDP (%)"},
                 gauge={
                     'axis': {'range': [None, 250]},
-                    'bar': {'color': "#00D4AA"},
+                    'bar': {'color': "#14b8a6"},
                     'steps': [
                         {'range': [0, 80], 'color': "#1A365D"},
                         {'range': [80, 120], 'color': "#2A4365"},
@@ -3194,8 +3634,8 @@ elif page == "Market Overview":
         df['timestamp'] = pd.to_datetime(df['timestamp'])
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value']/1000, mode='lines',
-                                fill='tozeroy', fillcolor='rgba(0, 163, 255, 0.15)',
-                                line=dict(color='#00A3FF', width=2)))
+                                fill='tozeroy', fillcolor='rgba(139, 92, 246, 0.15)',
+                                line=dict(color='#8b5cf6', width=2)))
         fig.update_layout(title="Margin Debt at Broker-Dealers ($Billions)", xaxis_title="", yaxis_title="$ Billions",
                          template='plotly_dark', height=350, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                          xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'))
@@ -3240,7 +3680,7 @@ elif page == "Market Overview":
 
     with col1:
         st.markdown("**Precious Metals & Commodities**")
-        commodities = [("GLD", "Gold", "#FFD700"), ("SLV", "Silver", "#C0C0C0"), ("USO", "Oil", "#00A3FF"), ("DBC", "Commodities", "#F6AD55")]
+        commodities = [("GLD", "Gold", "#FFD700"), ("SLV", "Silver", "#C0C0C0"), ("USO", "Oil", "#8b5cf6"), ("DBC", "Commodities", "#F6AD55")]
         fig = go.Figure()
         for ticker, name, color in commodities:
             ret, df = get_return(ticker)
@@ -3256,7 +3696,7 @@ elif page == "Market Overview":
 
     with col2:
         st.markdown("**Crypto & Real Estate**")
-        alts = [("BTC-USD", "Bitcoin", "#F7931A"), ("ETH-USD", "Ethereum", "#627EEA"), ("VNQ", "REITs", "#00D4AA")]
+        alts = [("BTC-USD", "Bitcoin", "#F7931A"), ("ETH-USD", "Ethereum", "#627EEA"), ("VNQ", "REITs", "#14b8a6")]
         fig = go.Figure()
         for ticker, name, color in alts:
             ret, df = get_return(ticker)
@@ -3373,11 +3813,11 @@ elif page == "Market Overview":
 
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['value'], mode='lines',
-                                name='SPY', line=dict(color='#00D4AA', width=2)))
+                                name='SPY', line=dict(color='#14b8a6', width=2)))
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['MA50'], mode='lines',
                                 name='50-Day MA', line=dict(color='#F6AD55', width=1.5, dash='dash')))
         fig.add_trace(go.Scatter(x=df['timestamp'], y=df['MA200'], mode='lines',
-                                name='200-Day MA', line=dict(color='#FC8181', width=1.5, dash='dash')))
+                                name='200-Day MA', line=dict(color='#ef4444', width=1.5, dash='dash')))
         fig.update_layout(title="S&P 500 (SPY) with Moving Averages", xaxis_title="", yaxis_title="Price ($)",
                          template='plotly_dark', height=400, paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
                          xaxis=dict(gridcolor='#2D3748'), yaxis=dict(gridcolor='#2D3748'), hovermode='x unified')
@@ -3410,6 +3850,650 @@ elif page == "Market Overview":
                      "Overbought" if current_rsi > 70 else "Oversold" if current_rsi < 30 else "Neutral")
     else:
         st.info("Insufficient historical data for technical analysis.")
+
+# Page: Credit Spreads
+elif page == "Credit Spreads":
+    st.header("💳 Credit Spreads & Bond Market Stress")
+
+    st.markdown("""
+    ### Understanding Credit Spreads
+
+    Credit spreads measure the difference in yield between corporate bonds and "risk-free" Treasury bonds of similar
+    maturity. When investors demand higher yields to hold corporate debt relative to Treasuries, spreads widen - this
+    signals increased concern about default risk and economic stress. Credit markets often lead equity markets in
+    signaling trouble because bond investors tend to be more risk-aware and have priority claims in bankruptcy.
+
+    **High Yield (Junk) Spreads** are particularly important because these bonds are issued by companies with weaker
+    balance sheets. When spreads blow out (widen dramatically), it often indicates financial stress is spreading
+    through the economy. The 2008 crisis saw high yield spreads exceed 20%; COVID briefly pushed them above 10%.
+
+    **Investment Grade Spreads** track higher-quality corporate debt. These widen less dramatically but still provide
+    important signals about corporate borrowing conditions and overall financial market stress.
+
+    *The spread data below uses ICE BofA indices, the industry standard for tracking credit market conditions.*
+    """)
+
+    # Key credit spread indicators
+    # ICE BofA US High Yield Index Option-Adjusted Spread
+    # ICE BofA US Corporate Index Option-Adjusted Spread
+    # BAA-AAA spread for corporate quality
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    # High Yield Spread
+    hy_spread = fetch_api("/api/indicators/BAMLH0A0HYM2/latest", silent=True)
+    if hy_spread and hy_spread.get('latest_value') is not None:
+        val = hy_spread['latest_value']
+        with col1:
+            delta_str = "Elevated" if val > 5 else "Normal" if val < 4 else "Moderate"
+            st.metric("High Yield Spread", f"{val:.2f}%", delta=delta_str,
+                     delta_color="inverse" if val > 5 else "normal")
+
+    # Investment Grade Spread
+    ig_spread = fetch_api("/api/indicators/BAMLC0A0CM/latest", silent=True)
+    if ig_spread and ig_spread.get('latest_value') is not None:
+        val = ig_spread['latest_value']
+        with col2:
+            st.metric("Investment Grade Spread", f"{val:.2f}%")
+
+    # BAA Corporate Bond Yield
+    baa_yield = fetch_api("/api/indicators/DBAA/latest", silent=True)
+    if baa_yield and baa_yield.get('latest_value') is not None:
+        with col3:
+            st.metric("BAA Corporate Yield", f"{baa_yield['latest_value']:.2f}%")
+
+    # AAA Corporate Bond Yield
+    aaa_yield = fetch_api("/api/indicators/DAAA/latest", silent=True)
+    if aaa_yield and aaa_yield.get('latest_value') is not None:
+        with col4:
+            st.metric("AAA Corporate Yield", f"{aaa_yield['latest_value']:.2f}%")
+
+    st.divider()
+
+    # Historical High Yield Spread
+    st.subheader("High Yield Spread History")
+    time_range = st.selectbox("Time Range", ["1 Year", "5 Years", "10 Years", "20 Years", "Max"], index=2, key="credit_range")
+    days_map = {"1 Year": 365, "5 Years": 1825, "10 Years": 3650, "20 Years": 7300, "Max": 15000}
+    start_date = datetime.now() - timedelta(days=days_map[time_range])
+
+    hy_data = fetch_api(f"/api/indicators/BAMLH0A0HYM2/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+    ig_data = fetch_api(f"/api/indicators/BAMLC0A0CM/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if hy_data and hy_data.get('data'):
+        fig = go.Figure()
+
+        # High Yield spread
+        hy_df = pd.DataFrame(hy_data['data'])
+        hy_df['timestamp'] = pd.to_datetime(hy_df['timestamp'])
+        fig.add_trace(go.Scatter(
+            x=hy_df['timestamp'], y=hy_df['value'],
+            name='High Yield Spread', line=dict(color='#ef4444', width=2),
+            fill='tozeroy', fillcolor='rgba(239, 68, 68, 0.1)'
+        ))
+
+        # Investment Grade spread
+        if ig_data and ig_data.get('data'):
+            ig_df = pd.DataFrame(ig_data['data'])
+            ig_df['timestamp'] = pd.to_datetime(ig_df['timestamp'])
+            fig.add_trace(go.Scatter(
+                x=ig_df['timestamp'], y=ig_df['value'],
+                name='Investment Grade Spread', line=dict(color='#14b8a6', width=2)
+            ))
+
+        # Add stress threshold lines
+        fig.add_hline(y=5, line_dash="dash", line_color="yellow",
+                     annotation_text="Stress Level (5%)", annotation_position="right")
+        fig.add_hline(y=8, line_dash="dash", line_color="red",
+                     annotation_text="Crisis Level (8%)", annotation_position="right")
+
+        fig.update_layout(
+            title="Credit Spreads Over Time",
+            yaxis_title="Spread (%)",
+            height=500,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # BAA-AAA Spread (credit quality indicator)
+    st.subheader("BAA-AAA Spread (Credit Quality Indicator)")
+    st.markdown("""
+    The spread between BAA (lowest investment grade) and AAA (highest quality) corporate bonds measures
+    how much extra yield investors demand for taking on additional credit risk within investment grade.
+    Widening suggests flight to quality even within the corporate bond market.
+    """)
+
+    baa_data = fetch_api(f"/api/indicators/DBAA/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+    aaa_data = fetch_api(f"/api/indicators/DAAA/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if baa_data and baa_data.get('data') and aaa_data and aaa_data.get('data'):
+        baa_df = pd.DataFrame(baa_data['data'])
+        aaa_df = pd.DataFrame(aaa_data['data'])
+        baa_df['timestamp'] = pd.to_datetime(baa_df['timestamp'])
+        aaa_df['timestamp'] = pd.to_datetime(aaa_df['timestamp'])
+
+        # Merge and calculate spread
+        merged = pd.merge(baa_df, aaa_df, on='timestamp', suffixes=('_baa', '_aaa'))
+        merged['spread'] = merged['value_baa'] - merged['value_aaa']
+
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=merged['timestamp'], y=merged['spread'],
+            name='BAA-AAA Spread', line=dict(color='#9F7AEA', width=2),
+            fill='tozeroy', fillcolor='rgba(159, 122, 234, 0.1)'
+        ))
+        fig2.update_layout(
+            title="BAA-AAA Corporate Bond Spread",
+            yaxis_title="Spread (%)",
+            height=400,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+# Page: Currency Monitor
+elif page == "Currency Monitor":
+    st.header("💱 Currency & Dollar Monitor")
+
+    st.markdown("""
+    ### The Dollar's Role in Global Markets
+
+    The U.S. Dollar is the world's reserve currency, and its strength or weakness ripples through every asset class.
+    A strong dollar makes U.S. exports more expensive (hurting multinationals), reduces the dollar value of overseas
+    earnings, puts pressure on emerging markets with dollar-denominated debt, and typically correlates with lower
+    commodity prices (since most commodities are priced in dollars).
+
+    **DXY (Dollar Index)** measures the dollar against a basket of six major currencies (EUR, JPY, GBP, CAD, SEK, CHF),
+    with the Euro comprising about 57% of the weight. It's the most widely watched measure of overall dollar strength.
+
+    **Key relationships to watch:**
+    - Dollar strength often coincides with risk-off environments (flight to safety)
+    - The Yen traditionally strengthens during market stress (safe haven currency)
+    - Emerging market currencies weaken when the dollar strengthens, potentially causing EM debt stress
+    """)
+
+    # Currency pairs using Yahoo Finance symbols
+    currencies = [
+        ("DX-Y.NYB", "DXY Index", "Dollar Index"),
+        ("EURUSD=X", "EUR/USD", "Euro"),
+        ("JPY=X", "USD/JPY", "Japanese Yen"),
+        ("GBPUSD=X", "GBP/USD", "British Pound"),
+        ("CNY=X", "USD/CNY", "Chinese Yuan"),
+        ("AUDUSD=X", "AUD/USD", "Australian Dollar"),
+    ]
+
+    # Display current values
+    col1, col2, col3 = st.columns(3)
+    cols = [col1, col2, col3, col1, col2, col3]
+
+    for i, (symbol, label, name) in enumerate(currencies):
+        data = fetch_api(f"/api/indicators/{symbol}/latest", silent=True)
+        if data and data.get('latest_value') is not None:
+            with cols[i]:
+                st.metric(label, f"{data['latest_value']:.4f}" if 'USD' in label else f"{data['latest_value']:.2f}")
+
+    st.divider()
+
+    # DXY Historical Chart
+    st.subheader("Dollar Index (DXY) History")
+    time_range = st.selectbox("Time Range", ["1 Year", "5 Years", "10 Years", "Max"], index=1, key="fx_range")
+    days_map = {"1 Year": 365, "5 Years": 1825, "10 Years": 3650, "Max": 10000}
+    start_date = datetime.now() - timedelta(days=days_map[time_range])
+
+    dxy_data = fetch_api(f"/api/indicators/DX-Y.NYB/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if dxy_data and dxy_data.get('data'):
+        df = pd.DataFrame(dxy_data['data'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=df['timestamp'], y=df['value'],
+            name='DXY', line=dict(color='#14b8a6', width=2),
+            fill='tozeroy', fillcolor='rgba(20, 184, 166, 0.1)'
+        ))
+
+        # Add reference lines
+        fig.add_hline(y=100, line_dash="dash", line_color="gray",
+                     annotation_text="100 (Baseline)", annotation_position="right")
+
+        fig.update_layout(
+            title="U.S. Dollar Index (DXY)",
+            yaxis_title="Index Value",
+            height=450,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Multi-currency comparison
+    st.subheader("Major Currency Pairs")
+
+    fig2 = go.Figure()
+    colors = ['#14b8a6', '#8b5cf6', '#ef4444', '#F6AD55', '#9F7AEA']
+
+    for i, (symbol, label, name) in enumerate(currencies[1:]):  # Skip DXY
+        data = fetch_api(f"/api/indicators/{symbol}/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+        if data and data.get('data'):
+            df = pd.DataFrame(data['data'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            # Normalize to percentage change from start
+            df['normalized'] = (df['value'] / df['value'].iloc[0] - 1) * 100
+            fig2.add_trace(go.Scatter(
+                x=df['timestamp'], y=df['normalized'],
+                name=label, line=dict(color=colors[i % len(colors)], width=2)
+            ))
+
+    fig2.add_hline(y=0, line_dash="dash", line_color="gray")
+    fig2.update_layout(
+        title="Currency Performance (% Change from Start)",
+        yaxis_title="% Change",
+        height=450,
+        **PLOTLY_LAYOUT_DEFAULTS
+    )
+    st.plotly_chart(fig2, use_container_width=True)
+
+# Page: Commodities
+elif page == "Commodities":
+    st.header("🛢️ Commodities Dashboard")
+
+    st.markdown("""
+    ### Commodities as Economic Indicators
+
+    Commodity prices provide real-time signals about global economic activity, inflation expectations, and supply/demand
+    dynamics. Unlike financial assets, commodities are physical goods consumed in production and daily life, making
+    their prices directly reflect real economic conditions.
+
+    **Key Commodities:**
+    - **Crude Oil (WTI/Brent):** The lifeblood of the global economy. Oil prices affect transportation costs, manufacturing
+      inputs, and consumer spending through gasoline prices. High oil prices act as a tax on consumers.
+    - **Gold:** The ultimate safe haven and inflation hedge. Gold typically rises during uncertainty, real rate declines,
+      and dollar weakness. The gold/silver ratio can signal risk sentiment.
+    - **Copper ("Dr. Copper"):** Called the metal with a PhD in economics because its price closely tracks industrial
+      activity. Copper is used in construction, electronics, and manufacturing - rising prices signal growth.
+    - **Natural Gas:** Critical for heating and electricity generation. Highly seasonal and weather-dependent.
+
+    **Copper/Gold Ratio:** A rising ratio suggests economic optimism (cyclical copper outperforming defensive gold);
+    a falling ratio suggests risk aversion and growth concerns.
+    """)
+
+    # Commodity symbols
+    commodities = [
+        ("CL=F", "Crude Oil (WTI)", "$/barrel"),
+        ("GC=F", "Gold", "$/oz"),
+        ("SI=F", "Silver", "$/oz"),
+        ("HG=F", "Copper", "$/lb"),
+        ("NG=F", "Natural Gas", "$/MMBtu"),
+        ("ZC=F", "Corn", "cents/bu"),
+    ]
+
+    # Display current prices
+    col1, col2, col3 = st.columns(3)
+    cols = [col1, col2, col3, col1, col2, col3]
+
+    commodity_values = {}
+    for i, (symbol, name, unit) in enumerate(commodities):
+        data = fetch_api(f"/api/indicators/{symbol}/latest", silent=True)
+        if data and data.get('latest_value') is not None:
+            commodity_values[symbol] = data['latest_value']
+            with cols[i]:
+                st.metric(name, f"${data['latest_value']:,.2f}", help=unit)
+
+    st.divider()
+
+    # Time range selector
+    st.subheader("Commodity Price History")
+    time_range = st.selectbox("Time Range", ["1 Year", "3 Years", "5 Years", "10 Years"], index=1, key="commodity_range")
+    days_map = {"1 Year": 365, "3 Years": 1095, "5 Years": 1825, "10 Years": 3650}
+    start_date = datetime.now() - timedelta(days=days_map[time_range])
+
+    # Oil chart
+    oil_data = fetch_api(f"/api/indicators/CL=F/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+    if oil_data and oil_data.get('data'):
+        df = pd.DataFrame(oil_data['data'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=df['timestamp'], y=df['value'],
+            name='WTI Crude', line=dict(color='#F6AD55', width=2),
+            fill='tozeroy', fillcolor='rgba(246, 173, 85, 0.1)'
+        ))
+        fig.update_layout(
+            title="Crude Oil (WTI)",
+            yaxis_title="$/barrel",
+            height=400,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # Gold and Copper comparison
+    col1, col2 = st.columns(2)
+
+    with col1:
+        gold_data = fetch_api(f"/api/indicators/GC=F/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+        if gold_data and gold_data.get('data'):
+            df = pd.DataFrame(gold_data['data'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=df['timestamp'], y=df['value'],
+                name='Gold', line=dict(color='#FFD700', width=2),
+                fill='tozeroy', fillcolor='rgba(255, 215, 0, 0.1)'
+            ))
+            fig.update_layout(title="Gold", yaxis_title="$/oz", height=350, **PLOTLY_LAYOUT_DEFAULTS)
+            st.plotly_chart(fig, use_container_width=True)
+
+    with col2:
+        copper_data = fetch_api(f"/api/indicators/HG=F/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+        if copper_data and copper_data.get('data'):
+            df = pd.DataFrame(copper_data['data'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(
+                x=df['timestamp'], y=df['value'],
+                name='Copper', line=dict(color='#B87333', width=2),
+                fill='tozeroy', fillcolor='rgba(184, 115, 51, 0.1)'
+            ))
+            fig.update_layout(title="Copper", yaxis_title="$/lb", height=350, **PLOTLY_LAYOUT_DEFAULTS)
+            st.plotly_chart(fig, use_container_width=True)
+
+    # Copper/Gold Ratio
+    st.subheader("Copper/Gold Ratio (Economic Sentiment)")
+    if gold_data and gold_data.get('data') and copper_data and copper_data.get('data'):
+        gold_df = pd.DataFrame(gold_data['data'])
+        copper_df = pd.DataFrame(copper_data['data'])
+        gold_df['timestamp'] = pd.to_datetime(gold_df['timestamp'])
+        copper_df['timestamp'] = pd.to_datetime(copper_df['timestamp'])
+
+        merged = pd.merge(copper_df, gold_df, on='timestamp', suffixes=('_copper', '_gold'))
+        # Ratio: copper price * 1000 / gold price (scale for readability)
+        merged['ratio'] = (merged['value_copper'] * 1000) / merged['value_gold']
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=merged['timestamp'], y=merged['ratio'],
+            name='Copper/Gold Ratio', line=dict(color='#14b8a6', width=2),
+            fill='tozeroy', fillcolor='rgba(20, 184, 166, 0.1)'
+        ))
+        fig.update_layout(
+            title="Copper/Gold Ratio (Higher = More Optimistic)",
+            yaxis_title="Ratio",
+            height=400,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+# Page: Global Markets
+elif page == "Global Markets":
+    st.header("🌍 Global Markets Comparison")
+
+    st.markdown("""
+    ### Diversification Beyond U.S. Borders
+
+    While U.S. markets have dominated returns over the past decade, global diversification remains important for
+    risk management and capturing opportunities in different economic cycles. International markets can outperform
+    for extended periods - European and emerging markets led in the 2000s while the U.S. lagged.
+
+    **Key Comparisons:**
+    - **US vs. International Developed (EFA):** Europe, Japan, Australia - mature economies with different sector exposures
+    - **US vs. Emerging Markets (EEM):** China, India, Brazil, etc. - higher growth potential but more volatility
+    - **Developed vs. Emerging:** Relative performance indicates global risk appetite
+
+    **Why EM Matters:** Emerging markets are sensitive to dollar strength, commodity prices, and global growth.
+    When the dollar weakens and growth is strong, EM often outperforms significantly.
+    """)
+
+    # Global market ETFs
+    markets = [
+        ("SPY", "S&P 500 (US)", "#14b8a6"),
+        ("EFA", "Developed Int'l (EAFE)", "#8b5cf6"),
+        ("EEM", "Emerging Markets", "#ef4444"),
+        ("VGK", "Europe (VGK)", "#F6AD55"),
+        ("EWJ", "Japan (EWJ)", "#9F7AEA"),
+        ("FXI", "China (FXI)", "#ED64A6"),
+    ]
+
+    # Current values
+    col1, col2, col3 = st.columns(3)
+    cols = [col1, col2, col3, col1, col2, col3]
+
+    for i, (symbol, name, color) in enumerate(markets):
+        data = fetch_api(f"/api/indicators/{symbol}/latest", silent=True)
+        if data and data.get('latest_value') is not None:
+            with cols[i]:
+                st.metric(name, f"${data['latest_value']:.2f}")
+
+    st.divider()
+
+    # Time range selector
+    st.subheader("Relative Performance")
+    time_range = st.selectbox("Time Range", ["YTD", "1 Year", "3 Years", "5 Years", "10 Years"], index=2, key="global_range")
+
+    if time_range == "YTD":
+        start_date = datetime(datetime.now().year, 1, 1)
+    else:
+        days_map = {"1 Year": 365, "3 Years": 1095, "5 Years": 1825, "10 Years": 3650}
+        start_date = datetime.now() - timedelta(days=days_map[time_range])
+
+    # Normalized performance chart
+    fig = go.Figure()
+
+    for symbol, name, color in markets:
+        data = fetch_api(f"/api/indicators/{symbol}/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+        if data and data.get('data'):
+            df = pd.DataFrame(data['data'])
+            df['timestamp'] = pd.to_datetime(df['timestamp'])
+            df = df.sort_values('timestamp')
+            # Normalize to percentage change from start
+            df['normalized'] = (df['value'] / df['value'].iloc[0] - 1) * 100
+            fig.add_trace(go.Scatter(
+                x=df['timestamp'], y=df['normalized'],
+                name=name, line=dict(color=color, width=2)
+            ))
+
+    fig.add_hline(y=0, line_dash="dash", line_color="gray")
+    fig.update_layout(
+        title=f"Global Market Performance ({time_range})",
+        yaxis_title="% Return",
+        height=500,
+        **PLOTLY_LAYOUT_DEFAULTS
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    # US vs International ratio
+    st.subheader("US vs. International Relative Strength")
+
+    spy_data = fetch_api(f"/api/indicators/SPY/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+    efa_data = fetch_api(f"/api/indicators/EFA/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+    eem_data = fetch_api(f"/api/indicators/EEM/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if spy_data and efa_data and spy_data.get('data') and efa_data.get('data'):
+        spy_df = pd.DataFrame(spy_data['data'])
+        efa_df = pd.DataFrame(efa_data['data'])
+        spy_df['timestamp'] = pd.to_datetime(spy_df['timestamp'])
+        efa_df['timestamp'] = pd.to_datetime(efa_df['timestamp'])
+
+        merged = pd.merge(spy_df, efa_df, on='timestamp', suffixes=('_spy', '_efa'))
+        merged['us_vs_intl'] = merged['value_spy'] / merged['value_efa']
+        # Normalize
+        merged['us_vs_intl_norm'] = (merged['us_vs_intl'] / merged['us_vs_intl'].iloc[0] - 1) * 100
+
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=merged['timestamp'], y=merged['us_vs_intl_norm'],
+            name='US vs Developed Int\'l', line=dict(color='#14b8a6', width=2),
+            fill='tozeroy', fillcolor='rgba(20, 184, 166, 0.1)'
+        ))
+
+        if eem_data and eem_data.get('data'):
+            eem_df = pd.DataFrame(eem_data['data'])
+            eem_df['timestamp'] = pd.to_datetime(eem_df['timestamp'])
+            merged2 = pd.merge(spy_df, eem_df, on='timestamp', suffixes=('_spy', '_eem'))
+            merged2['us_vs_em'] = merged2['value_spy'] / merged2['value_eem']
+            merged2['us_vs_em_norm'] = (merged2['us_vs_em'] / merged2['us_vs_em'].iloc[0] - 1) * 100
+            fig2.add_trace(go.Scatter(
+                x=merged2['timestamp'], y=merged2['us_vs_em_norm'],
+                name='US vs Emerging', line=dict(color='#ef4444', width=2)
+            ))
+
+        fig2.add_hline(y=0, line_dash="dash", line_color="gray")
+        fig2.update_layout(
+            title="US Outperformance vs International (Rising = US Winning)",
+            yaxis_title="Relative Performance (%)",
+            height=400,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+# Page: Sentiment
+elif page == "Sentiment":
+    st.header("📊 Sentiment & Positioning")
+
+    st.markdown("""
+    ### Measuring Market Psychology
+
+    Sentiment indicators gauge investor psychology and can serve as contrarian signals. When everyone is bullish,
+    there may be no one left to buy. When everyone is bearish, the market may be oversold. These indicators are
+    most useful at extremes - moderate readings are less actionable.
+
+    **Key Indicators:**
+    - **VIX (Fear Index):** Measures expected S&P 500 volatility. Spikes during fear, low during complacency.
+      Readings above 30 often mark market bottoms; below 15 can signal complacency.
+    - **VIX Term Structure:** When near-term VIX exceeds longer-term (backwardation), it signals acute fear.
+      Normal markets show contango (upward slope).
+    - **Put/Call Ratio:** High readings (>1.0) indicate bearishness and potential contrarian buy signal.
+      Low readings (<0.7) indicate complacency.
+
+    *Remember: Sentiment indicators work best as contrarian signals at extremes. Markets can stay irrational
+    longer than you can stay solvent - don't use these alone.*
+    """)
+
+    # Key sentiment indicators
+    col1, col2, col3, col4 = st.columns(4)
+
+    # VIX
+    vix_data = fetch_api("/api/indicators/^VIX/latest", silent=True)
+    if vix_data and vix_data.get('latest_value') is not None:
+        vix_val = vix_data['latest_value']
+        with col1:
+            if vix_val > 30:
+                sentiment = "Fear"
+                color = "inverse"
+            elif vix_val < 15:
+                sentiment = "Complacent"
+                color = "off"
+            else:
+                sentiment = "Normal"
+                color = "normal"
+            st.metric("VIX", f"{vix_val:.2f}", delta=sentiment, delta_color=color)
+
+    # VIX3M (3-month VIX)
+    vix3m_data = fetch_api("/api/indicators/^VIX3M/latest", silent=True)
+    if vix3m_data and vix3m_data.get('latest_value') is not None:
+        with col2:
+            st.metric("VIX 3-Month", f"{vix3m_data['latest_value']:.2f}")
+
+    # Term structure
+    if vix_data and vix3m_data and vix_data.get('latest_value') and vix3m_data.get('latest_value'):
+        term_spread = vix3m_data['latest_value'] - vix_data['latest_value']
+        with col3:
+            structure = "Contango" if term_spread > 0 else "Backwardation"
+            st.metric("VIX Term Spread", f"{term_spread:.2f}", delta=structure,
+                     delta_color="normal" if term_spread > 0 else "inverse")
+
+    # Put/Call ratio (CBOE equity)
+    pcr_data = fetch_api("/api/indicators/PCEQUITY/latest", silent=True)
+    if pcr_data and pcr_data.get('latest_value') is not None:
+        pcr_val = pcr_data['latest_value']
+        with col4:
+            if pcr_val > 1.0:
+                pcr_signal = "Bearish"
+            elif pcr_val < 0.7:
+                pcr_signal = "Bullish"
+            else:
+                pcr_signal = "Neutral"
+            st.metric("Put/Call Ratio", f"{pcr_val:.2f}", delta=pcr_signal)
+
+    st.divider()
+
+    # VIX Historical
+    st.subheader("VIX History")
+    time_range = st.selectbox("Time Range", ["1 Year", "3 Years", "5 Years", "10 Years"], index=1, key="sentiment_range")
+    days_map = {"1 Year": 365, "3 Years": 1095, "5 Years": 1825, "10 Years": 3650}
+    start_date = datetime.now() - timedelta(days=days_map[time_range])
+
+    vix_history = fetch_api(f"/api/indicators/^VIX/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if vix_history and vix_history.get('data'):
+        df = pd.DataFrame(vix_history['data'])
+        df['timestamp'] = pd.to_datetime(df['timestamp'])
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            x=df['timestamp'], y=df['value'],
+            name='VIX', line=dict(color='#ef4444', width=2),
+            fill='tozeroy', fillcolor='rgba(239, 68, 68, 0.1)'
+        ))
+
+        # Add threshold lines
+        fig.add_hline(y=30, line_dash="dash", line_color="red",
+                     annotation_text="Fear (30)", annotation_position="right")
+        fig.add_hline(y=20, line_dash="dash", line_color="yellow",
+                     annotation_text="Elevated (20)", annotation_position="right")
+        fig.add_hline(y=15, line_dash="dash", line_color="green",
+                     annotation_text="Complacent (15)", annotation_position="right")
+
+        fig.update_layout(
+            title="VIX - Volatility Index",
+            yaxis_title="VIX Level",
+            height=450,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    # VIX Term Structure Chart
+    st.subheader("VIX Term Structure Over Time")
+
+    vix3m_history = fetch_api(f"/api/indicators/^VIX3M/timeseries?start={start_date.isoformat()}&limit=10000", silent=True)
+
+    if vix_history and vix3m_history and vix_history.get('data') and vix3m_history.get('data'):
+        vix_df = pd.DataFrame(vix_history['data'])
+        vix3m_df = pd.DataFrame(vix3m_history['data'])
+        vix_df['timestamp'] = pd.to_datetime(vix_df['timestamp'])
+        vix3m_df['timestamp'] = pd.to_datetime(vix3m_df['timestamp'])
+
+        merged = pd.merge(vix_df, vix3m_df, on='timestamp', suffixes=('_vix', '_vix3m'))
+        merged['term_spread'] = merged['value_vix3m'] - merged['value_vix']
+
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=merged['timestamp'], y=merged['term_spread'],
+            name='VIX Term Spread (3M - Spot)', line=dict(color='#9F7AEA', width=2),
+            fill='tozeroy', fillcolor='rgba(159, 122, 234, 0.1)'
+        ))
+        fig2.add_hline(y=0, line_dash="dash", line_color="red",
+                      annotation_text="Backwardation Below", annotation_position="right")
+
+        fig2.update_layout(
+            title="VIX Term Structure (Positive = Contango, Negative = Backwardation)",
+            yaxis_title="Spread",
+            height=400,
+            **PLOTLY_LAYOUT_DEFAULTS
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+    # Fear & Greed conceptual section
+    st.subheader("Interpreting Sentiment Extremes")
+    st.markdown("""
+    | Indicator | Extreme Fear | Neutral | Extreme Greed |
+    |-----------|--------------|---------|---------------|
+    | VIX | > 30 | 15-25 | < 15 |
+    | Put/Call Ratio | > 1.0 | 0.7-1.0 | < 0.7 |
+    | VIX Term Structure | Backwardation | Flat | Steep Contango |
+
+    **Contrarian Signals:**
+    - Extreme fear often marks buying opportunities (but can persist)
+    - Extreme greed suggests caution (but markets can stay complacent)
+    - Best used in combination with price action and fundamentals
+    """)
 
 # Page: Custom Analysis
 elif page == "Custom Analysis":
@@ -3469,7 +4553,7 @@ elif page == "Custom Analysis":
                 # Create comparison chart
                 fig = go.Figure()
                 # Vibrant colors for dark theme
-                colors = ['#00D4AA', '#00A3FF', '#F6AD55', '#FC8181', '#B794F4']
+                colors = ['#14b8a6', '#8b5cf6', '#F6AD55', '#ef4444', '#B794F4']
 
                 for i, (sel_id, dataset) in enumerate(datasets.items()):
                     df = dataset['data']
